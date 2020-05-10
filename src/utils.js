@@ -13,16 +13,11 @@ function concatenate(results) {
   return stringToReturn;
 }
 
-function address(string) {
-  return `<say-as interpret-as="address">${string}</say-as>`;
-}
-
 function digitize(number) {
   return `<say-as interpret-as="digits">${number}</say-as>`;
 }
 
 module.exports = {
-  address: address,
   concatenate: concatenate,
   digitize: digitize
 };

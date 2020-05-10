@@ -136,8 +136,12 @@ exports.handler = skillBuilder
     CancelIntentHandler,
     StopIntentHandler,
     FallbackIntentHandler,
+    NavigateHomeIntentHandler,
     SessionEndedRequestHandler
   )
   .addErrorHandlers(ErrorHandler)
   .withApiClient(new Alexa.DefaultApiClient())
   .lambda();
+
+// eslint-disable-next-line max-len
+// npm install && rm -rf alexa-covid-report.zip && zip -r alexa-covid-report.zip * && aws lambda update-function-code --function-name AlexaCovidReport --zip-file fileb://alexa-covid-report.zip

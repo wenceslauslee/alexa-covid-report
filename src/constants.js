@@ -4,7 +4,7 @@ module.exports = {
   // Prompts
 
   // Intents
-  GET_DEFAULT_SUMMARY_INTENT: 'GetDefaultSummaryIntent',
+  GET_DEFAULT_SUMMARY_INTENT: 'GetDefaultSummaryIntent'
 
   // Current states
 

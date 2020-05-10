@@ -1,61 +1,23 @@
-const attributes = require('./attributes');
 const constants = require('./constants');
-const mbtaInfo = require('./mbta-info');
-const moment = require('moment-timezone');
-const prediction = require('./prediction');
-const stopRouteDb = require('./stop-route-db');
-const timeHelper = require('./time-helper');
+const covidCountyDb = require('./covid-county-db');
 const utils = require('./utils');
-const _ = require('underscore');
-
-function callDirectiveService(handlerInput, speechOutput) {
-  const requestEnvelope = handlerInput.requestEnvelope;
-  const directiveServiceClient = handlerInput.serviceClientFactory.getDirectiveServiceClient();
-  const requestId = requestEnvelope.request.requestId;
-  const endpoint = requestEnvelope.context.System.apiEndpoint;
-  const token = requestEnvelope.context.System.apiAccessToken;
-
-  const directive = {
-    header: {
-      requestId
-    },
-    directive: {
-      type: 'VoicePlayer.Speak',
-      speech: speechOutput
-    }
-  };
-
-  return directiveServiceClient.enqueue(directive, endpoint, token);
-}
 
 function getDefaultSummary(handlerInput) {
-  console.log('jump jump');
   const deviceId = handlerInput.requestEnvelope.context.System.device.deviceId;
   const deviceAddressServiceClient = handlerInput.serviceClientFactory.getDeviceAddressServiceClient();
   return deviceAddressServiceClient.getCountryAndPostalCode(deviceId)
     .then(addressInfo => {
       console.log(addressInfo);
-      const postalCode = addressInfo.postalCode;
-      console.log('thump thump');
 
-      return response(
-        handlerInput,
-        `For ${utils.digitize(postalCode)} Middlesex County, Massachusetts, the current active count is 76743`,
-        `${postalCode} Middlesex\nActive Count: 100`
-      );
-    });
-}
+      return covidCountyDb.query(addressInfo.postalCode);
+    })
+    .then(data => {
+      console.log(`Received data: ${JSON.stringify(data, null, 2)}`);
+      const speech = defaultSpeech(data.postalCode, data.county, data.stateFull, data.detailedInfo.county);
+      const display = defaultDisplay(data.postalCode, data.county, data.stateShort, data.detailedInfo.county);
+      console.log(`${speech}, ${display}`);
 
-function handleHelpInput(handlerInput) {
-  const deviceId = handlerInput.requestEnvelope.context.System.device.deviceId;
-
-  return getSessionAttributes(handlerInput, deviceId)
-    .then(sessionAttributes => {
-      refreshRecent(sessionAttributes);
-      sessionAttributes.currentState = null;
-      attributes.setAttributes(handlerInput, sessionAttributes);
-
-      return response(handlerInput, constants.HELP_PROMPT, constants.HELP_PROMPT, constants.REPROMPT_TRY_AGAIN, false);
+      return response(handlerInput, speech, display);
     })
     .catch(err => {
       console.log(err);
@@ -63,17 +25,15 @@ function handleHelpInput(handlerInput) {
     });
 }
 
-// Gets session attributes from request, otherwise reads from DB.
-function getSessionAttributes(handlerInput, deviceId) {
-  const sessionAttributes = attributes.getAttributes(handlerInput);
-  if (!sessionAttributes.recent) {
-    return stopRouteDb.query(deviceId)
-      .then(data => {
-        attributes.setAttributes(handlerInput, data);
-        return data;
-      });
-  }
-  return Promise.resolve(sessionAttributes);
+function defaultSpeech(postalCode, county, stateFull, detailedInfo) {
+  return `For ${utils.digitize(postalCode)} ${county} County, ${stateFull}, the current case count is ` +
+    `${detailedInfo.activeCount}. The death count is ${detailedInfo.deathCount}`;
+}
+
+function defaultDisplay(postalCode, county, stateShort, detailedInfo) {
+  return `${postalCode} ${county} County, ${stateShort}\n\n` +
+    `Case Count: ${detailedInfo.activeCount} (${detailedInfo.activeRank})\n\n` +
+    `Death Count: ${detailedInfo.deathCount} (${detailedInfo.deathRank})`;
 }
 
 function response(handlerInput, speech, display) {
@@ -85,7 +45,5 @@ function response(handlerInput, speech, display) {
 }
 
 module.exports = {
-  callDirectiveService: callDirectiveService,
-  getDefaultSummary: getDefaultSummary,
-  handleHelpInput: handleHelpInput
+  getDefaultSummary: getDefaultSummary
 };
