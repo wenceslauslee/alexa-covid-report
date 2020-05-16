@@ -17,7 +17,34 @@ function digitize(number) {
   return `<say-as interpret-as="digits">${number}</say-as>`;
 }
 
+function changeValue(change) {
+  if (change >= 0) {
+    return '+' + change;
+  }
+
+  return change;
+}
+
+function rank(value) {
+  if (value % 100 === 11 || value % 100 === 12 || value % 100 === 13) {
+    return value + 'th';
+  }
+  if (value % 10 === 1) {
+    return value + 'st';
+  }
+  if (value % 10 === 2) {
+    return value + 'nd';
+  }
+  if (value % 10 === 3) {
+    return value + 'rd';
+  }
+
+  return value + 'th';
+}
+
 module.exports = {
+  changeValue: changeValue,
   concatenate: concatenate,
-  digitize: digitize
+  digitize: digitize,
+  rank: rank
 };

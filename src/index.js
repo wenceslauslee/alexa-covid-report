@@ -100,7 +100,6 @@ const SessionEndedRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
   },
   handle(handlerInput) {
-    console.log(`bad bun: ${JSON.stringify(handlerInput, null, 2)}`);
     console.log(`Session ended with reason: ${handlerInput.requestEnvelope.request.reason}`);
 
     return handlerInput.responseBuilder
@@ -116,7 +115,6 @@ const ErrorHandler = {
     return true;
   },
   handle(handlerInput, error) {
-    console.log(`bad bun: ${JSON.stringify(handlerInput, null, 2)}`);
     console.log(`Error encountered: ${error}`);
 
     return handlerInput.responseBuilder
@@ -142,6 +140,3 @@ exports.handler = skillBuilder
   .addErrorHandlers(ErrorHandler)
   .withApiClient(new Alexa.DefaultApiClient())
   .lambda();
-
-// eslint-disable-next-line max-len
-// npm install && rm -rf alexa-covid-report.zip && zip -r alexa-covid-report.zip * && aws lambda update-function-code --function-name AlexaCovidReport --zip-file fileb://alexa-covid-report.zip
