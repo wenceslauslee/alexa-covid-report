@@ -5,12 +5,27 @@ const utils = require('./utils');
 
 function getDefaultSummary(handlerInput) {
   const deviceId = handlerInput.requestEnvelope.context.System.device.deviceId;
+  const consentToken = handlerInput.requestEnvelope.context.System.user.permissions &&
+    handlerInput.requestEnvelope.context.System.user.permissions.consentToken;
+
+  if (!consentToken) {
+    return handlerInput.responseBuilder
+      .speak(constants.NOTIFY_MISSING_PERMISSIONS)
+      .withAskForPermissionsConsentCard(['read::alexa:device:all:address:country_and_postal_code'])
+      .getResponse();
+  }
+
   const deviceAddressServiceClient = handlerInput.serviceClientFactory.getDeviceAddressServiceClient();
+  var promptForPostalCode = false;
   var postalCode;
 
   return deviceAddressServiceClient.getCountryAndPostalCode(deviceId)
     .then(addressInfo => {
       console.log(addressInfo);
+      if (addressInfo.postalCode === null) {
+        promptForPostalCode = true;
+        throw Error('Missing postal code for address.');
+      }
       postalCode = addressInfo.postalCode;
 
       return covidPostalCountyDb.query(addressInfo.postalCode)
@@ -25,6 +40,11 @@ function getDefaultSummary(handlerInput) {
     })
     .catch(err => {
       console.log(err);
+
+      if (promptForPostalCode) {
+        return response(handlerInput, constants.NOTIFY_MISSING_POSTAL_CODE, constants.NOTIFY_MISSING_POSTAL_CODE);
+      }
+
       throw err;
     });
 }
