@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -x
+
 npm install &&
 rm -rf alexa-covid-report.zip &&
 zip -r alexa-covid-report.zip * &&

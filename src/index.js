@@ -21,6 +21,16 @@ const GetDefaultSummaryIntentHandler = {
   }
 };
 
+const GetPostalSummaryIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === constants.GET_POSTAL_SUMMARY_INTENT;
+  },
+  handle(handlerInput) {
+    return indexHelper.getPostalSummary(handlerInput);
+  }
+};
+
 const HelpIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
@@ -130,6 +140,7 @@ exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchRequestHandler,
     GetDefaultSummaryIntentHandler,
+    GetPostalSummaryIntentHandler,
     HelpIntentHandler,
     CancelIntentHandler,
     StopIntentHandler,
