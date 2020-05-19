@@ -5,7 +5,7 @@ const tableName = 'covid-postal-county';
 function query(postalCode) {
   const params = {
     TableName: tableName,
-    ProjectionExpression: 'countyStateName',
+    ProjectionExpression: 'fips',
     KeyConditionExpression: 'postalCode = :s',
     ExpressionAttributeValues: {
       ':s': postalCode

@@ -1,6 +1,7 @@
 const constants = require('./constants');
 const covidCountyDb = require('./db/covid-county-db');
 const covidPostalCountyDb = require('./db/covid-postal-county-db');
+const usStateCodes = require('us-state-codes');
 const utils = require('./utils');
 
 function checkForPermissions(handlerInput) {
@@ -37,6 +38,10 @@ function getPostalSummary(handlerInput) {
   return getSummaryHelper(handlerInput, postalCode);
 }
 
+function getCountyStateSummary(handlerInput) {
+  return response(handlerInput, 'Not supported yet', 'Not supported yet');
+}
+
 function getSummaryHelper(handlerInput, postalCode) {
   console.log(postalCode);
   if (postalCode === null || postalCode === undefined) {
@@ -52,7 +57,7 @@ function getSummaryHelper(handlerInput, postalCode) {
         throw Error(`Malformed postal code data ${postalCode}`);
       }
 
-      return covidCountyDb.query(data.countyStateName);
+      return covidCountyDb.query(data.fips);
     })
     .then(data => {
       if (data === undefined) {
@@ -61,8 +66,9 @@ function getSummaryHelper(handlerInput, postalCode) {
       }
 
       console.log(`Received data: ${JSON.stringify(data, null, 2)}`);
-      const speech = defaultSpeech(postalCode, data.county, data.stateFull, data.detailedInfo);
-      const display = defaultDisplay(data.currentDate, postalCode, data.county, data.stateShort, data.detailedInfo);
+      const speech = defaultSpeech(postalCode, data.countyName, data.stateNameFull, data.detailedInfo);
+      const display = defaultDisplay(data.currentDate, postalCode, data.countyName,
+        usStateCodes.getStateCodeByStateName(data.stateNameFull), data.detailedInfo);
 
       return response(handlerInput, speech, display);
     })
@@ -85,18 +91,19 @@ function getSummaryHelper(handlerInput, postalCode) {
     });
 }
 
-function defaultSpeech(postalCode, countyName, stateFull, detailedInfo) {
-  return `For ${utils.digitize(postalCode)}, ${countyName} County, ${stateFull}, there are ` +
-    `${detailedInfo.activeCount} cases and ${detailedInfo.deathCount} deaths.`;
+function defaultSpeech(postalCode, countyName, stateNameFull, detailedInfo) {
+  return `For ${countyName} County, ${stateNameFull}, there are ` +
+    `${utils.approximateValue(detailedInfo.activeCount)} cases, accounting for roughly ` +
+    `${detailedInfo.activePercentage} percent of population.`;
 }
 
-function defaultDisplay(currentDate, postalCode, countyName, stateShort, detailedInfo) {
-  return `${currentDate}\n` +
-    `${postalCode} ${countyName} County, ${stateShort}\n\n` +
+function defaultDisplay(currentDate, postalCode, countyName, stateNameShort, detailedInfo) {
+  return `${postalCode} ${countyName} County, ${stateNameShort}\n\n` +
     `Case Counts: ${detailedInfo.activeCount} (${utils.rank(detailedInfo.activeRank)}) ` +
     `(${utils.changeValue(detailedInfo.activeChange)})\n` +
     `Death Counts: ${detailedInfo.deathCount} (${utils.rank(detailedInfo.deathRank)}) ` +
-    `(${utils.changeValue(detailedInfo.deathChange)})`;
+    `(${utils.changeValue(detailedInfo.deathChange)})\n\n` +
+    `~${detailedInfo.activePercentage}% of population has been affected.`;
 }
 
 function response(handlerInput, speech, display) {
@@ -108,6 +115,7 @@ function response(handlerInput, speech, display) {
 }
 
 module.exports = {
+  getCountyStateSummary: getCountyStateSummary,
   getDefaultSummary: getDefaultSummary,
   getPostalSummary: getPostalSummary
 };

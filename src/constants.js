@@ -11,6 +11,7 @@ module.exports = {
   NOTIFY_GENERIC_ERROR: 'Sorry, I ran into some issues and a bug report has been filed. Please try another command.',
 
   // Intents
+  GET_COUNTY_STATE_SUMMARY_INTENT: 'GetCountyStateSummaryIntent',
   GET_DEFAULT_SUMMARY_INTENT: 'GetDefaultSummaryIntent',
   GET_POSTAL_SUMMARY_INTENT: 'GetPostalSummaryIntent'
 

@@ -31,6 +31,16 @@ const GetPostalSummaryIntentHandler = {
   }
 };
 
+const GetCountyStateSummaryIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === constants.GET_COUNTY_STATE_SUMMARY_INTENT;
+  },
+  handle(handlerInput) {
+    return indexHelper.getCountyStateSummary(handlerInput);
+  }
+};
+
 const HelpIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
@@ -141,6 +151,7 @@ exports.handler = skillBuilder
     LaunchRequestHandler,
     GetDefaultSummaryIntentHandler,
     GetPostalSummaryIntentHandler,
+    GetCountyStateSummaryIntentHandler,
     HelpIntentHandler,
     CancelIntentHandler,
     StopIntentHandler,

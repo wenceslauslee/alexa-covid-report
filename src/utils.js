@@ -42,7 +42,18 @@ function rank(value) {
   return value + 'th';
 }
 
+function approximateValue(actualValue) {
+  if (actualValue < 100) {
+    return `${actualValue}`;
+  } else if (actualValue < 10000) {
+    return `over ${Math.floor(actualValue / 100)} hundred`;
+  }
+
+  return `over ${Math.floor(actualValue / 1000)} thousand`;
+}
+
 module.exports = {
+  approximateValue: approximateValue,
   changeValue: changeValue,
   concatenate: concatenate,
   digitize: digitize,

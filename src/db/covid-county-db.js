@@ -2,13 +2,13 @@ const db = require('./db-api');
 
 const tableName = 'covid-county';
 
-function query(countyStateName) {
+function query(fips) {
   const params = {
     TableName: tableName,
-    ProjectionExpression: 'countyStateName, currentDate, pastDate, county, stateShort, stateFull, detailedInfo',
-    KeyConditionExpression: 'countyStateName = :s',
+    ProjectionExpression: 'fips, currentDate, pastDate, countyName, stateNameFull, detailedInfo',
+    KeyConditionExpression: 'fips = :s',
     ExpressionAttributeValues: {
-      ':s': countyStateName
+      ':s': fips
     }
   };
 
