@@ -11,16 +11,6 @@ const LaunchRequestHandler = {
   }
 };
 
-const GetDefaultSummaryIntentHandler = {
-  canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
-      handlerInput.requestEnvelope.request.intent.name === constants.GET_DEFAULT_SUMMARY_INTENT;
-  },
-  handle(handlerInput) {
-    return indexHelper.getDefaultSummary(handlerInput);
-  }
-};
-
 const GetPostalSummaryIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
@@ -149,7 +139,6 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchRequestHandler,
-    GetDefaultSummaryIntentHandler,
     GetPostalSummaryIntentHandler,
     GetCountyStateSummaryIntentHandler,
     HelpIntentHandler,
