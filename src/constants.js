@@ -6,6 +6,7 @@ module.exports = {
   NOTIFY_MISSING_PERMISSIONS: 'Please enable Location permissions in the Amazon Alexa app.',
   NOTIFY_MISSING_POSTAL_CODE: 'It looks like you don\'t have a postal code set for this device. ' +
     'You can set your address from the companion app.',
+  NOTIFY_MISSING_COUNTY_STATE: 'I can\'t understand the location mentioned. Please try another.',
   NOTIFY_INVALID_POSTAL_CODE: ' is an invalid postal code. Please try another.',
   NOTIFY_NO_POSTAL_DATA: 'It looks like I don\'t have data for postal code ',
   NOTIFY_GENERIC_ERROR: 'Sorry, I ran into some issues and a bug report has been filed. Please try another command.',
