@@ -1,0 +1,42 @@
+language: node_js
+node_js:
+  - "12"
+script:
+  - npm run style
+notifications:
+  email:
+    recipients:
+     - wenceslauslee@gmail.com
+    on_success: change  # default: change
+    on_failure: always  # default: always
+deploy:
+  - provider: lambda
+    function_name: AlexaCovidReport
+    region: us-east-1
+    role: arn:aws:iam::262375365616:role/service-role/AlexaCovidReport-role-j6o5bqhy
+    runtime: nodejs12.x
+    module_name: src/index
+    handler_name: handler
+    description: Alexa skill to report daily COVID-19 reports
+    memory_size: 256
+    access_key_id:
+      secure: jSGcXeq9coVUWFihjOynu+Ki710FuQJvSEYaSVeL4yYNUOEWXVseI/Fx2++4voRHaixPdoTOxBuAyMv7GxzrD9nq55PKX8zIJ0gWzgdiSBITL/p2GVMh3azViMxfFszoR93F7LPpGGskup7nbaPfX5ZgWJyTvVp0GxNqGXFBGPxtF3p4x1qYIz3bwc3OwDQhJsglNkr40d78rFA7SbNhet3vUmjP7YfMkP4ObKFlOCkx5hOlmfXCHfe3to229JdQVY1LkH3ZjXuxT69h/fCUz8UXp3tkK35lcIp+N/ke8pwt5bf0Wvk1y/yaWqzEptTxcK12lQu+ZHShCcuXNRn56uA+KoKg4EWuX/hmLcduPtAIxttRvuORzRWB+U/xnl8zZJuMeZXtgEY3WoBaL9vucP+hVL42pZiARsKBq2w3wBh/+A0Xh54zbjPaXeh12FCP5rq4ldaHaSXAb8aAJxGFtFaP4kmJTENb07MkXAA9kFxi9+d27VIkZLhaOAJrWRIOLVZT4ajmi3RZAZM4RjhMlr9EAl0JmCUN4UKLhRzXwF95OFL0mq3n6BUvfpq+JyCx2TDiT05PwojKKKkIQer0EknbcLig2Ae0Hu0Wu5TxMjIx5Z4ucaYteDXVgumb1XWJPy+iyxi5dTX8pKMjl4ph2sehOmjhGNk/DPg4NQZNKoU=
+    secret_access_key:
+      secure: c0V1heArt2P3/AOvZcj1TUfgqt9P1tVd83OVkvvff5m7vO5LMuspyrd3ONxIcxx21y9La7As2XvDdwEDiXD5Q5L7JktWyhJ/8/wuJ0G9HqpQLO9cuwpncS2AkBUtVeuv+NzCzDC14tjeuvZDZONfBEl7tQBEWm7QCHuuQoTQZ8cBvkXuwGhiL2GwDHgq4+b4z57aUafcpMQk0hbr67n1E+wdXKf2NwE8gbWICYrtapa8Dt9egrsmLZBWOBVToVrxyrCr+qHSGaic4Jzs8jA271RQ+ufNA8or/QdoGDI8HiMUEVThPzMfu8oiPMk/Bdv2eC9fe+y9eGmspscmLRyEKunwFFp1fJTbnrl1dchNYQsdI5J1/tdRLMdYrNdXgj8eVkiXOinKvEQDLjinVywB5GsIvFktuAW4oIZY8ll1n1b0/fpH5NimmKpMEMElAcqQIeH275CuZ/Cs1XyUpCQ/gXKZCKpxIY3EVVEIsDfA2fvSozeAFX6hzr/qw4VPEcVsNxneetQaARYuzlEi2iA6Ib2hSXdO9IcDZ/6r9nO4Tj3uaOqhyRW5WKyezCPYYGCXeiZfN1zmIFbdPNIySiox1IPVIM47cZ/tpnVrnaSSeNv3noH6xuNL99o+m/MxXAJNd1zp/9Mf1QlBVlhfelJSkue1fetvqHJtBCOBojwqRQg=
+    on:
+      branch: master
+  - provider: lambda
+    function_name: AlexaCovidReportDev
+    region: us-east-1
+    role: arn:aws:iam::262375365616:role/service-role/AlexaCovidReport-role-j6o5bqhy
+    runtime: nodejs12.x
+    module_name: src/index
+    handler_name: handler
+    description: Alexa skill to report daily COVID-19 reports
+    memory_size: 256
+    access_key_id:
+      secure: jSGcXeq9coVUWFihjOynu+Ki710FuQJvSEYaSVeL4yYNUOEWXVseI/Fx2++4voRHaixPdoTOxBuAyMv7GxzrD9nq55PKX8zIJ0gWzgdiSBITL/p2GVMh3azViMxfFszoR93F7LPpGGskup7nbaPfX5ZgWJyTvVp0GxNqGXFBGPxtF3p4x1qYIz3bwc3OwDQhJsglNkr40d78rFA7SbNhet3vUmjP7YfMkP4ObKFlOCkx5hOlmfXCHfe3to229JdQVY1LkH3ZjXuxT69h/fCUz8UXp3tkK35lcIp+N/ke8pwt5bf0Wvk1y/yaWqzEptTxcK12lQu+ZHShCcuXNRn56uA+KoKg4EWuX/hmLcduPtAIxttRvuORzRWB+U/xnl8zZJuMeZXtgEY3WoBaL9vucP+hVL42pZiARsKBq2w3wBh/+A0Xh54zbjPaXeh12FCP5rq4ldaHaSXAb8aAJxGFtFaP4kmJTENb07MkXAA9kFxi9+d27VIkZLhaOAJrWRIOLVZT4ajmi3RZAZM4RjhMlr9EAl0JmCUN4UKLhRzXwF95OFL0mq3n6BUvfpq+JyCx2TDiT05PwojKKKkIQer0EknbcLig2Ae0Hu0Wu5TxMjIx5Z4ucaYteDXVgumb1XWJPy+iyxi5dTX8pKMjl4ph2sehOmjhGNk/DPg4NQZNKoU=
+    secret_access_key:
+      secure: c0V1heArt2P3/AOvZcj1TUfgqt9P1tVd83OVkvvff5m7vO5LMuspyrd3ONxIcxx21y9La7As2XvDdwEDiXD5Q5L7JktWyhJ/8/wuJ0G9HqpQLO9cuwpncS2AkBUtVeuv+NzCzDC14tjeuvZDZONfBEl7tQBEWm7QCHuuQoTQZ8cBvkXuwGhiL2GwDHgq4+b4z57aUafcpMQk0hbr67n1E+wdXKf2NwE8gbWICYrtapa8Dt9egrsmLZBWOBVToVrxyrCr+qHSGaic4Jzs8jA271RQ+ufNA8or/QdoGDI8HiMUEVThPzMfu8oiPMk/Bdv2eC9fe+y9eGmspscmLRyEKunwFFp1fJTbnrl1dchNYQsdI5J1/tdRLMdYrNdXgj8eVkiXOinKvEQDLjinVywB5GsIvFktuAW4oIZY8ll1n1b0/fpH5NimmKpMEMElAcqQIeH275CuZ/Cs1XyUpCQ/gXKZCKpxIY3EVVEIsDfA2fvSozeAFX6hzr/qw4VPEcVsNxneetQaARYuzlEi2iA6Ib2hSXdO9IcDZ/6r9nO4Tj3uaOqhyRW5WKyezCPYYGCXeiZfN1zmIFbdPNIySiox1IPVIM47cZ/tpnVrnaSSeNv3noH6xuNL99o+m/MxXAJNd1zp/9Mf1QlBVlhfelJSkue1fetvqHJtBCOBojwqRQg=
+    on:
+      branch: development
